@@ -11,7 +11,7 @@ var losses = 0;
 var noAnswer = 0;
 
 //Timer Variables
-var counter = 5;
+var counter = 10;
 var vcounter = 0;
 var wait = 3;
 var clockRunning = false;
