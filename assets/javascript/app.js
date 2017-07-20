@@ -137,7 +137,7 @@ $('.start-button').on('click', function() {
 
 	function resetTimer(){
 				clearInterval(vcounter);
-				counter = 5;
+				counter = 10;
 				show();
 				clockRunning = false;
 	}
@@ -164,7 +164,7 @@ $('.start-button').on('click', function() {
 		losses = 0;
 		noAnswer = 0;
 
-		counter = 5;
+		counter = 10;
 		clearInterval(vcounter);
 		clockRunning = false;	
 
