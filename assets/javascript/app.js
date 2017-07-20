@@ -14,7 +14,7 @@ var noAnswer = 0;
 var counter = 5;
 var vcounter = 0;
 var wait = 3;
-
+var clockRunning = false;
 
 var questionArray = [
 	{
@@ -49,7 +49,7 @@ $('.start-button').on('click', function() {
 	function getQuestion() {
 		if (globalIndex == 4) {
 		finalCheck();
-		}
+		} else {
 
 		document.getElementById('question').textContent = questionArray[globalIndex].question;
 
@@ -62,25 +62,30 @@ $('.start-button').on('click', function() {
 	        }
 
 		show();
+
+	}
 	}
 
 	function show(){
 		$('.toggle').show();
 		$('#hdisplay').html('<h1>00:0' + counter + '</h1>');
+		if (!clockRunning) {
 		vcounter = setInterval(countDown, 1000);
+		clockRunning = true;
+		}
 	}
 
 	function countDown() {
 		counter--;
 		$('#hdisplay').html('<h1>00:0' + counter + '</h1>');
-		if (counter === 0) {
-			clearInterval(vcounter);
-			counter = 5;
-		waitSeconds();
+		if (counter == 0 || counter <= 0) {
+			resetTimer();
+			noAnswer++;
+			nextQuestion();
 		}
 	}
 
-	function waitSeconds(){
+	function nextQuestion(){
 			resetQuestion();
 			getQuestion();
 	}
@@ -99,17 +104,16 @@ $('.start-button').on('click', function() {
 
 			checkAnswer();
 
-			console.log('userButton: ', userButton);
+			// console.log('userButton: ', userButton);
 	}
 
 	function checkAnswer() {
 
 		if (userButton == questionArray[globalIndex].correctAnswer) {
 			wins++;
-			clearInterval(vcounter);
-			counter = 5;
-			show();
+			resetTimer();
 			console.log('wins: ', wins);
+			nextQuestion();
 			// userButton = '';
 			if (globalIndex == 4) {
 				finalCheck();
@@ -118,31 +122,25 @@ $('.start-button').on('click', function() {
 		} else {
 			if (userButton != questionArray[globalIndex].correctAnswer) {
 				losses++;
-				clearInterval(vcounter);
-				counter = 5;
-				show();
+				resetTimer();
 				console.log('losses', losses);
+				nextQuestion();
 				// userButton = '';
 				if (globalIndex == 4) {
 				finalCheck();
 			}
-			} else {
-				if (userButton == '' && counter == 0) {
-					noanswer++;
-					clearInterval(vcounter);
-					counter = 5;
-					show();
-					console.log('noanswer: ', noanswer);
-					// userButton = '';
-					if (globalIndex == 4) {
-					finalCheck();
-			}
-				}
 			}
 		}
 
 
 	}//end function
+
+	function resetTimer(){
+				clearInterval(vcounter);
+				counter = 5;
+				show();
+				clockRunning = false;
+	}
 
 	function finalCheck(){
 		$(".btn-toolbar").empty();
@@ -150,9 +148,14 @@ $('.start-button').on('click', function() {
 
 		$('.btn-toolbar').html('<h1>Wins: ' + wins + '</h1></br></br>');
 		$('.btn-toolbar').append('<h1>Losses: ' + losses + '</h1></br></br>');
-		$('.btn-toolbar').append('<h1>Unanswered: ' + noanswer + '</h1></br></br>');
+		$('.btn-toolbar').append('<h1>Unanswered: ' + noAnswer + '</h1></br></br>');
 
-		$('.btn-toolbar').html('<h1>Press the "Start!" button to play again!</h1></br></br>');
+		$('.btn-toolbar').append('<h1>Press the "Start!" button to play again!</h1>');
+
+
+$('.start-button').on('click', function() {
+		$(".btn-toolbar").empty();
+		$("#question").empty();
 
 		globalIndex = 0;
 		userButton = '';
@@ -162,7 +165,13 @@ $('.start-button').on('click', function() {
 		noAnswer = 0;
 
 		counter = 5;
-		clearInterval(vcounter);		
+		clearInterval(vcounter);
+		clockRunning = false;	
+
+		getQuestion();
+});//End Start Button
+
+	
 
 		
 	}
